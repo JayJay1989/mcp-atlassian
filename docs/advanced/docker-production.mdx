@@ -12,6 +12,7 @@ docker run -i --rm \
   -e JIRA_URL=https://your-company.atlassian.net \
   -e JIRA_USERNAME=your.email@example.com \
   -e JIRA_API_TOKEN=your_api_token \
+  -e JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001 \
   -e CONFLUENCE_URL=https://your-company.atlassian.net/wiki \
   -e CONFLUENCE_USERNAME=your.email@example.com \
   -e CONFLUENCE_API_TOKEN=your_api_token \
@@ -97,6 +98,7 @@ Use `.env` files for sensitive credentials:
 JIRA_URL=https://your-company.atlassian.net
 JIRA_USERNAME=your.email@example.com
 JIRA_API_TOKEN=your_api_token
+JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001
 CONFLUENCE_URL=https://your-company.atlassian.net/wiki
 CONFLUENCE_USERNAME=your.email@example.com
 CONFLUENCE_API_TOKEN=your_api_token
@@ -105,6 +107,12 @@ CONFLUENCE_API_TOKEN=your_api_token
 <Warning>
 Never commit `.env` files to version control. Add `.env` to your `.gitignore`.
 </Warning>
+
+<Note>
+`JIRA_SMART_CHECKLIST_FIELD_ID` is required only when using the Smart Checklist
+tools. Set it to the Jira custom field ID for the Smart Checklist `Checklists`
+field, such as `customfield_10001`.
+</Note>
 
 ## Read-Only Mode
 

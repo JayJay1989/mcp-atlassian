@@ -143,6 +143,13 @@ spec:
               name: {{ include "mcp-atlassian.fullname" . }}
               key: jira-projects-filter
         {{- end }}
+        {{- if .Values.jira.smartChecklistFieldId }}
+        - name: JIRA_SMART_CHECKLIST_FIELD_ID
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "mcp-atlassian.fullname" . }}
+              key: jira-smart-checklist-field-id
+        {{- end }}
         {{- if .Values.jira.customHeaders }}
         - name: JIRA_CUSTOM_HEADERS
           valueFrom:

@@ -63,6 +63,7 @@ docker run --rm -i \
   -e JIRA_URL=https://your-company.atlassian.net \
   -e JIRA_USERNAME=your.email@company.com \
   -e JIRA_API_TOKEN=your_api_token \
+  -e JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001 \
   ghcr.io/sooperset/mcp-atlassian:latest
 ```
 
@@ -81,6 +82,7 @@ docker run --rm -i \
         "-e", "JIRA_URL",
         "-e", "JIRA_USERNAME",
         "-e", "JIRA_API_TOKEN",
+        "-e", "JIRA_SMART_CHECKLIST_FIELD_ID",
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
@@ -89,7 +91,8 @@ docker run --rm -i \
         "CONFLUENCE_API_TOKEN": "your_confluence_api_token",
         "JIRA_URL": "https://your-company.atlassian.net",
         "JIRA_USERNAME": "your.email@company.com",
-        "JIRA_API_TOKEN": "your_jira_api_token"
+        "JIRA_API_TOKEN": "your_jira_api_token",
+        "JIRA_SMART_CHECKLIST_FIELD_ID": "customfield_10001"
       }
     }
   }

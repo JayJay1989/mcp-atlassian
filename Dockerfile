@@ -49,6 +49,9 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Disable Python output buffering for proper stdio communication
 ENV PYTHONUNBUFFERED=1
 
+# For Smart Checklist tools, pass the Jira Checklists custom field ID:
+# docker run -e JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001 your-image
+
 # For minimal OAuth setup without environment variables, use:
 # docker run -e ATLASSIAN_OAUTH_ENABLE=true -p 8000:8000 your-image
 # Then provide authentication via headers:

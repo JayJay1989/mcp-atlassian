@@ -35,6 +35,51 @@ Custom field IDs differ between Cloud and Server/DC. Use `jira_search_fields` to
 
 ---
 
+### Get Smart Checklist Property
+
+Get the legacy Smart Checklist issue property from a Jira issue.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `issue_key` | `string` | Yes | Jira issue key (e.g., 'PROJ-123') |
+
+---
+
+### Get Smart Checklist
+
+Get the Smart Checklist custom field value from a Jira issue.
+
+Requires `JIRA_SMART_CHECKLIST_FIELD_ID` to be set to the Jira custom field ID
+for the Smart Checklist `Checklists` field.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `issue_key` | `string` | Yes | Jira issue key (e.g., 'PROJ-123') |
+
+---
+
+### Set Smart Checklist
+
+Set the Smart Checklist custom field value for a Jira issue.
+
+Requires `JIRA_SMART_CHECKLIST_FIELD_ID` to be set. Disabled when
+`READ_ONLY_MODE=true`.
+
+<Note>This is a **write** tool. Disabled when `READ_ONLY_MODE=true`.</Note>
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `issue_key` | `string` | Yes | Jira issue key (e.g., 'PROJ-123') |
+| `checklist` | `string` | Yes | Smart Checklist markdown string, e.g. `- ToDo List\n+ Checked\nx Skipped\n~ In Progress\n` |
+
+---
+
 ### Create Issue
 
 Create a new Jira issue with optional Epic link or parent for subtasks.

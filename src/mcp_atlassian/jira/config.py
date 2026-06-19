@@ -114,6 +114,7 @@ class JiraConfig:
     client_cert: str | None = None  # Client certificate file path (.pem)
     client_key: str | None = None  # Client private key file path (.pem)
     client_key_password: str | None = None  # Password for encrypted private key
+    smart_checklist_field_id: str | None = None  # Smart Checklist custom field ID
     sla_config: SLAConfig | None = None  # Optional SLA configuration
     timeout: int = 75  # Connection timeout in seconds
 
@@ -257,6 +258,9 @@ class JiraConfig:
         client_key = os.getenv("JIRA_CLIENT_KEY")
         client_key_password = os.getenv("JIRA_CLIENT_KEY_PASSWORD")
 
+        # Smart Checklist settings
+        smart_checklist_field_id = os.getenv("JIRA_SMART_CHECKLIST_FIELD_ID")
+
         # Timeout setting
         timeout = 75  # Default timeout
         if os.getenv("JIRA_TIMEOUT") and os.getenv("JIRA_TIMEOUT", "").isdigit():
@@ -280,6 +284,7 @@ class JiraConfig:
             client_cert=client_cert,
             client_key=client_key,
             client_key_password=client_key_password,
+            smart_checklist_field_id=smart_checklist_field_id,
             timeout=timeout,
         )
 

@@ -24,8 +24,9 @@ from .links import LinksMixin
 from .metrics import MetricsMixin
 from .projects import ProjectsMixin
 from .queues import QueuesMixin
-from .sla import SLAMixin
 from .search import SearchMixin
+from .sla import SLAMixin
+from .smart_checklist import SmartChecklistMixin
 from .sprints import SprintsMixin
 from .transitions import TransitionsMixin
 from .users import UsersMixin
@@ -44,6 +45,7 @@ class JiraFetcher(
     EpicsMixin,
     CommentsMixin,
     SearchMixin,
+    SmartChecklistMixin,
     IssuesMixin,
     UsersMixin,
     WatchersMixin,
@@ -68,6 +70,7 @@ class JiraFetcher(
     - EpicsMixin: Epic operations
     - CommentsMixin: Comment operations
     - SearchMixin: Search operations
+    - SmartChecklistMixin: Smart Checklist operations
     - IssuesMixin: Issue operations
     - UsersMixin: User operations
     - WatchersMixin: Watcher operations
@@ -91,6 +94,7 @@ __all__ = [
     "JiraConfig",
     "JiraClient",
     "Jira",
+    "SmartChecklistMixin",
     "MetricsMixin",
     "SLAMixin",
 ]

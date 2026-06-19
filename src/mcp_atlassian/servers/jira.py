@@ -385,6 +385,104 @@ async def get_issue(
 
 @jira_mcp.tool(
     tags={"jira", "read", "toolset:jira_issues"},
+    annotations={"title": "Get Smart Checklist Property", "readOnlyHint": True},
+)
+async def get_smart_checklist_property(
+    ctx: Context,
+    issue_key: Annotated[
+        str,
+        Field(
+            description="Jira issue key (e.g., 'PROJ-123')",
+            pattern=ISSUE_KEY_PATTERN,
+        ),
+    ],
+) -> str:
+    """Get the legacy Smart Checklist issue property for a Jira issue.
+
+    Args:
+        ctx: The FastMCP context.
+        issue_key: Jira issue key.
+
+    Returns:
+        JSON string containing the property key and value.
+    """
+    jira = await get_jira_fetcher(ctx)
+    result = jira.get_smart_checklist_property(issue_key)
+    return json.dumps(result, indent=2, ensure_ascii=False)
+
+
+@jira_mcp.tool(
+    tags={"jira", "read", "toolset:jira_issues"},
+    annotations={"title": "Get Smart Checklist", "readOnlyHint": True},
+)
+async def get_smart_checklist(
+    ctx: Context,
+    issue_key: Annotated[
+        str,
+        Field(
+            description="Jira issue key (e.g., 'PROJ-123')",
+            pattern=ISSUE_KEY_PATTERN,
+        ),
+    ],
+) -> str:
+    """Get the Smart Checklist custom field value for a Jira issue.
+
+    Args:
+        ctx: The FastMCP context.
+        issue_key: Jira issue key.
+
+    Returns:
+        JSON string containing the field ID and checklist value.
+    """
+    jira = await get_jira_fetcher(ctx)
+    result = jira.get_smart_checklist(issue_key)
+    return json.dumps(result, indent=2, ensure_ascii=False)
+
+
+@jira_mcp.tool(
+    tags={"jira", "write", "toolset:jira_issues"},
+    annotations={"title": "Set Smart Checklist", "destructiveHint": True},
+)
+@check_write_access
+async def set_smart_checklist(
+    ctx: Context,
+    issue_key: Annotated[
+        str,
+        Field(
+            description="Jira issue key (e.g., 'PROJ-123')",
+            pattern=ISSUE_KEY_PATTERN,
+        ),
+    ],
+    checklist: Annotated[
+        str,
+        Field(
+            description=(
+                "Smart Checklist markdown string. Example: "
+                "'- ToDo List\\n+ Checked\\nx Skipped\\n~ In Progress\\n'"
+            ),
+        ),
+    ],
+) -> str:
+    """Set the Smart Checklist custom field value for a Jira issue.
+
+    Args:
+        ctx: The FastMCP context.
+        issue_key: Jira issue key.
+        checklist: Smart Checklist markdown string.
+
+    Returns:
+        JSON string describing the successful update.
+    """
+    jira = await get_jira_fetcher(ctx)
+    result = jira.set_smart_checklist(
+        issue_key=issue_key,
+        checklist=checklist,
+    )
+    return json.dumps(result, indent=2, ensure_ascii=False)
+
+
+@jira_mcp.tool(
+    tags={"jira", "read", "toolset:jira_issues"},
     annotations={"title": "Search Issues", "readOnlyHint": True},
 )
 async def search(

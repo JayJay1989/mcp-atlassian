@@ -17,6 +17,9 @@ data:
   {{- if .Values.jira.projectsFilter }}
   jira-projects-filter: {{ .Values.jira.projectsFilter | quote }}
   {{- end }}
+  {{- if .Values.jira.smartChecklistFieldId }}
+  jira-smart-checklist-field-id: {{ .Values.jira.smartChecklistFieldId | quote }}
+  {{- end }}
   {{- end }}
 
   {{- if eq .Values.authMode "oauth" }}
