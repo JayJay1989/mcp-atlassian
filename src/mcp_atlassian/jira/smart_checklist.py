@@ -1,6 +1,8 @@
 """Module for Smart Checklist for Jira operations."""
 
+import json
 import logging
+import re
 from typing import Any
 
 from requests.exceptions import HTTPError
@@ -61,9 +63,14 @@ class SmartChecklistMixin(JiraClient):
 
         Returns:
             Dictionary containing the issue key, field ID, and checklist value.
+
+        Note:
+            The checklist value is exposed by the Smart Checklist plugin in the
+            custom field directly after the configured one (configured field ID
+            + 1), e.g. ``customfield_18600`` -> ``customfield_18601``.
         """
         self._validate_issue_access(issue_key)
-        checklist_field_id = self._get_smart_checklist_field_id()
+        checklist_field_id = self._get_smart_checklist_value_field_id()
 
         issue = self.jira.get_issue(
             issue_key,
@@ -89,7 +96,13 @@ class SmartChecklistMixin(JiraClient):
         issue_key: str,
         checklist: str,
     ) -> dict[str, Any]:
-        """Set the Smart Checklist custom field value for an issue.
+        """Replace the Smart Checklist of an issue via the Railsware REST API.
+
+        Smart Checklist updates are NOT done through the Jira custom field.
+        The ``checklistId`` is extracted from the configured custom field
+        (e.g. ``customfield_18600``), then the full checklist is replaced via
+        ``PUT rest/railsware/1.0/checklist/{checklistId}/item`` with
+        ``isReplace: true``.
 
         Args:
             issue_key: The Jira issue key or ID.
@@ -103,18 +116,69 @@ class SmartChecklistMixin(JiraClient):
         if not isinstance(checklist, str):
             raise ValueError("Checklist value must be a string.")
 
-        checklist_field_id = self._get_smart_checklist_field_id()
-        self.jira.update_issue(
-            issue_key=issue_key,
-            update={"fields": {checklist_field_id: checklist}},
+        base_field_id = self._get_smart_checklist_field_id()
+        issue = self.jira.get_issue(
+            issue_key,
+            expand=None,
+            fields=base_field_id,
+            properties=None,
+            update_history=False,
+        )
+        if not isinstance(issue, dict):
+            msg = f"Unexpected return value type from `jira.get_issue`: {type(issue)}"
+            logger.error(msg)
+            raise TypeError(msg)
+
+        fields = issue.get("fields", {}) or {}
+        checklist_id = self._extract_checklist_id(
+            fields.get(base_field_id), issue_key, base_field_id
+        )
+
+        self.jira.put(
+            f"rest/railsware/1.0/checklist/{checklist_id}/item",
+            data={"isReplace": True, "stringValue": checklist},
         )
 
         return {
             "success": True,
-            "message": f"Smart Checklist updated for issue {issue_key}",
+            "message": f"Smart Checklist replaced for issue {issue_key}",
             "issue_key": issue_key,
-            "field_id": checklist_field_id,
+            "checklist_id": checklist_id,
+            "field_id": base_field_id,
         }
+
+    @staticmethod
+    def _extract_checklist_id(
+        value: Any, issue_key: str, checklist_field_id: str
+    ) -> int:
+        """Extract the ``checklistId`` from the configured custom field value.
+
+        The configured custom field (e.g. ``customfield_18600``) contains the
+        checklist data, including its unique ``checklistId``
+        (e.g. ``6755062``). Handles dicts, JSON strings, and plain numeric
+        IDs.
+        """
+        if value is not None:
+            if isinstance(value, dict):
+                checklist_id = value.get("checklistId") or value.get("id")
+                if checklist_id is not None:
+                    return int(checklist_id)
+                text = json.dumps(value)
+            elif isinstance(value, (int, str)):
+                text = str(value)
+                if text.isdigit():
+                    return int(text)
+            else:
+                text = json.dumps(value, default=str)
+            match = re.search(r'"?(?:checklistId|id)"?\s*[:=]\s*"?(\d+)', text)
+            if match:
+                return int(match.group(1))
+
+        raise ValueError(
+            f"Could not extract Smart Checklist ID from field "
+            f"'{checklist_field_id}' of issue {issue_key}. "
+            "Verify the Smart Checklist plugin is enabled for this issue."
+        )
 
     def _get_smart_checklist_field_id(self) -> str:
         """Get the configured Smart Checklist custom field ID."""
@@ -126,6 +190,22 @@ class SmartChecklistMixin(JiraClient):
             "tools. Set it to your Jira Checklists custom field ID, "
             "for example 'customfield_10001'."
         )
+
+    def _get_smart_checklist_value_field_id(self) -> str:
+        """Get the field ID that holds the readable Smart Checklist value.
+
+        The Smart Checklist plugin stores the readable checklist value in the
+        custom field directly after the configured one (configured field ID
+        + 1), e.g. ``customfield_18600`` -> ``customfield_18601``.
+        """
+        field_id = self._get_smart_checklist_field_id()
+        prefix, _, number = field_id.rpartition("_")
+        if not prefix or not number.isdigit():
+            raise ValueError(
+                f"Cannot derive Smart Checklist value field from '{field_id}'. "
+                "Expected a custom field ID like 'customfield_18600'."
+            )
+        return f"{prefix}_{int(number) + 1}"
 
     def _validate_issue_access(self, issue_key: str) -> None:
         """Apply the configured project filter to issue-key based operations."""

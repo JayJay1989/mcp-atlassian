@@ -151,7 +151,7 @@ jira:
   # Project filter (comma-separated project keys)
   projectsFilter: ""
 
-  # Smart Checklist custom field ID (e.g., customfield_10001)
+  # Smart Checklist custom field ID (default: customfield_18600)
   # Required when using jira_get_smart_checklist or jira_set_smart_checklist
   smartChecklistFieldId: ""
 

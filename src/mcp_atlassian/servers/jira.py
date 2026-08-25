@@ -457,18 +457,22 @@ async def set_smart_checklist(
         str,
         Field(
             description=(
-                "Smart Checklist markdown string. Example: "
+                "Smart Checklist markdown string. REPLACES the entire "
+                "checklist, so include all sections/items to keep. Example: "
                 "'- ToDo List\\n+ Checked\\nx Skipped\\n~ In Progress\\n'"
             ),
         ),
     ],
 ) -> str:
-    """Set the Smart Checklist custom field value for a Jira issue.
+    """Replace the full Smart Checklist of a Jira issue.
+
+    Updates go through the Railsware Smart Checklist REST API (isReplace=true),
+    so the provided string replaces the entire checklist.
 
     Args:
         ctx: The FastMCP context.
         issue_key: Jira issue key.
-        checklist: Smart Checklist markdown string.
+        checklist: Smart Checklist markdown string (full replacement).
 
     Returns:
         JSON string describing the successful update.

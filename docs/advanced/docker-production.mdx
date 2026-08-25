@@ -12,7 +12,7 @@ docker run -i --rm \
   -e JIRA_URL=https://your-company.atlassian.net \
   -e JIRA_USERNAME=your.email@example.com \
   -e JIRA_API_TOKEN=your_api_token \
-  -e JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001 \
+  -e JIRA_SMART_CHECKLIST_FIELD_ID=customfield_18600 \
   -e CONFLUENCE_URL=https://your-company.atlassian.net/wiki \
   -e CONFLUENCE_USERNAME=your.email@example.com \
   -e CONFLUENCE_API_TOKEN=your_api_token \
@@ -98,7 +98,7 @@ Use `.env` files for sensitive credentials:
 JIRA_URL=https://your-company.atlassian.net
 JIRA_USERNAME=your.email@example.com
 JIRA_API_TOKEN=your_api_token
-JIRA_SMART_CHECKLIST_FIELD_ID=customfield_10001
+JIRA_SMART_CHECKLIST_FIELD_ID=customfield_18600
 CONFLUENCE_URL=https://your-company.atlassian.net/wiki
 CONFLUENCE_USERNAME=your.email@example.com
 CONFLUENCE_API_TOKEN=your_api_token
@@ -109,9 +109,10 @@ Never commit `.env` files to version control. Add `.env` to your `.gitignore`.
 </Warning>
 
 <Note>
-`JIRA_SMART_CHECKLIST_FIELD_ID` is required only when using the Smart Checklist
-tools. Set it to the Jira custom field ID for the Smart Checklist `Checklists`
-field, such as `customfield_10001`.
+`JIRA_SMART_CHECKLIST_FIELD_ID` defaults to `customfield_18600`. Override it
+only if your Jira instance uses a different custom field ID for the Smart
+Checklist `Checklists` field. The readable checklist value lives in field ID
++ 1 (e.g. `customfield_18601`); updates go through the Railsware REST API.
 </Note>
 
 ## Read-Only Mode

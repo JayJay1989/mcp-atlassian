@@ -293,6 +293,20 @@ def test_jira_config_smart_checklist_field_id_from_env():
         assert config.smart_checklist_field_id == "customfield_10001"
 
 
+def test_jira_config_smart_checklist_field_id_default():
+    """Test that Smart Checklist field ID defaults to customfield_18600."""
+    with patch.dict(
+        os.environ,
+        {
+            "JIRA_URL": "https://jira.example.com",
+            "JIRA_PERSONAL_TOKEN": "test_pat",
+        },
+        clear=True,
+    ):
+        config = JiraConfig.from_env()
+        assert config.smart_checklist_field_id == "customfield_18600"
+
+
 def test_jira_config_timeout_default():
     """Test that timeout defaults to 75 when no env var is set."""
     with patch.dict(

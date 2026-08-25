@@ -56,7 +56,7 @@ startCommand:
         description: "(Optional) Comma-separated list of Jira project keys to limit searches to (e.g., 'PROJ1,PROJ2')."
       jiraSmartChecklistFieldId:
         type: string
-        description: "(Optional) Jira custom field ID for Smart Checklist tools, e.g. 'customfield_10001'. Required when using Smart Checklist tools."
+        description: "(Optional) Jira custom field ID for Smart Checklist tools. Defaults to 'customfield_18600'."
 
       # General Config
       readOnlyMode:

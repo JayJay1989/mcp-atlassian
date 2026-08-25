@@ -51,8 +51,10 @@ Get the legacy Smart Checklist issue property from a Jira issue.
 
 Get the Smart Checklist custom field value from a Jira issue.
 
-Requires `JIRA_SMART_CHECKLIST_FIELD_ID` to be set to the Jira custom field ID
-for the Smart Checklist `Checklists` field.
+The checklist value is read from the custom field directly after the configured
+one (configured field ID + 1). For example, with
+`JIRA_SMART_CHECKLIST_FIELD_ID=customfield_18600` (the default), the value is
+read from `customfield_18601`.
 
 **Parameters:**
 
@@ -64,10 +66,13 @@ for the Smart Checklist `Checklists` field.
 
 ### Set Smart Checklist
 
-Set the Smart Checklist custom field value for a Jira issue.
+Replace the full Smart Checklist of a Jira issue.
 
-Requires `JIRA_SMART_CHECKLIST_FIELD_ID` to be set. Disabled when
-`READ_ONLY_MODE=true`.
+Updates go through the Railsware Smart Checklist REST API — **not** the Jira
+custom field. The `checklistId` is extracted from the configured custom field
+(default `customfield_18600`), then the checklist is replaced via
+`PUT rest/railsware/1.0/checklist/{checklistId}/item` with `isReplace: true`,
+so the provided string always replaces the entire checklist.
 
 <Note>This is a **write** tool. Disabled when `READ_ONLY_MODE=true`.</Note>
 
